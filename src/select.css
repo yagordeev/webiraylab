@@ -1,0 +1,149 @@
+#n3 {
+	height: 40px;
+	display: block;
+}
+
+#n3.focus>.select>.select-label {
+	border: 1px solid #5E5E7B !important;
+}
+
+.select-wrapper {
+	margin: auto;
+	max-width: 600px;
+	width: calc(100% - 40px);
+}
+
+.select {
+	position: relative;
+	z-index: 9;
+}
+
+.select-options {
+	background: #F2F2F8;
+	border-radius: 0 0 20px 20px;
+	box-sizing: border-box;
+	color: #363b3e;
+	left: 0;
+	max-height: 0px;
+	overflow-y: scroll;
+	position: absolute;
+	top: 20px;
+	padding-top: 20px;
+	width: 100%;
+	transition: max-height 0.2s ease;
+}
+
+.select--opened .select-options {
+	display: block;
+	max-height: 222px;
+}
+
+.select-option {
+	position: relative;
+	box-sizing: border-box;
+	height: 25px;
+	line-height: 25px;
+	margin: 6px 15px;
+	cursor: pointer;
+}
+
+.select-option .selected {
+	color: #e4e4e4;
+	cursor: initial;
+	pointer-events: none;
+}
+
+.selected:after {
+	content: "";
+	position: absolute;
+	right: 10px;
+	top: 6px;
+	width: 4px;
+	height: 7px;
+	border: solid #5E5E7B;
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+	border-radius: 1px;
+	display: block;
+}
+
+.select-option--hidden {
+	display: none;
+}
+
+.select-label {
+	align-items: center;
+	background: #fff;
+	border: 1px solid #CFCFD7;
+	box-sizing: border-box;
+	border-radius: 20px;
+	color: #363b3e;
+	height: 40px;
+	cursor: pointer;
+	display: flex;
+	font-size: 14px;
+	font-weight: 500;
+	justify-content: left;
+	min-height: 40px;
+	padding-left: 15px;
+	position: relative;
+	transition: 0.2s;
+	width: 100%;
+	z-index: 9;
+}
+
+.select--opened>.select-label {
+	background: #F2F2F8;
+	border: 1px solid #5E5E7B;
+}
+
+.select__selected-label {
+	background: #5e6264;
+	border-radius: 4px;
+	color: #fff;
+	cursor: initial;
+	display: inline-block;
+	margin: 5px 10px 5px 0;
+	padding: 3px 7px;
+}
+
+.select-selected-label:last-of-type {
+	margin-right: 0;
+}
+
+.select__selected-label i {
+	cursor: pointer;
+	display: inline-block;
+	margin-left: 7px;
+}
+
+.select__selected-label i:hover {
+	color: #e4e4e4;
+}
+
+.select-autocomplete {
+	background: #f9f9f8;
+	border-bottom: 1px solid #e4e4e4;
+	border-left: none;
+	border-right: none;
+	border-top: none;
+	box-sizing: border-box;
+	font-size: 16px;
+	outline: none;
+	padding: 10px;
+	width: 100%;
+}
+
+.select-placeholder {
+	position: absolute;
+	top: 10px;
+	left: 15px;
+	font-size: 14px;
+	color: #D5D5DC;
+	cursor: pointer;
+	z-index: 9;
+}
+
+.hidden {
+	display: none;
+}
