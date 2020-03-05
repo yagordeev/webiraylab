@@ -62,7 +62,8 @@ input[type="text"] {
 	border-radius: 20px;
 }
 
-input[type="text"] .focus {
+input[type="text"] .focus,
+div.focus {
 	border: 1px solid #5E5E7B !important;
 }
 

@@ -10,25 +10,33 @@ function User() {
 
 
 	const myOptions = [{
-			label: "New York",
-			value: "NY",
+			label: "Иванов Иван Иванович",
+			value: "001",
 		},
 		{
-			label: "Washington",
-			value: "WA",
+			label: "Иванов Иван Иванович",
+			value: "002",
 		},
 		{
-			label: "California",
-			value: "CA",
+			label: "Иванов Иван Иванович",
+			value: "003",
 		},
 		{
-			label: "New Jersey",
-			value: "NJ",
+			label: "Иванов Иван Иванович",
+			value: "004",
 		},
 		{
-			label: "North Carolina",
-			value: "NC",
+			label: "Иванов Иван Иванович",
+			value: "005",
 		},
+		{
+			label: "Иванов Иван Иванович",
+			value: "006",
+		},
+		{
+			label: "Иванов Иван Иванович",
+			value: "007",
+		}
 	]
 
 	useEffect(() => {
@@ -146,12 +154,11 @@ function User() {
 					name="n4"
 					value={user.n4 || ''}
 					onChange={handleChange}
-					className={user.n4 ? 'focus' : '' }
 					autoComplete="off"
 					required="required"
 					hidden={true}
 				/>
-				<div className="propusk">
+				<div className={user.n4 ? 'propusk focus' : 'propusk' }>
 					<button type="button" className={user.n4 !== 'постоянный' ? 'active' : ''} onClick={propuskChange} value="разовый">разовый</button>
 					<button type="button" className={user.n4 === 'постоянный' ? 'active' : ''} onClick={propuskChange} value="постоянный">постоянный</button>
 				</div>
