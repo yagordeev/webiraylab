@@ -2,4 +2,3 @@ node_modules
 .Ds_Store
 webpack.config.js
 src/public/index.html
-package-lock.json
