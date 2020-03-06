@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import SelectPure from 'select-pure';
 
+//переменная для одностраничной работы функции выбора статуса заявки
+var selectStatus = null;
+
+//варианты статуса заявки
 const status = [{
 		label: "Отказано",
 		value: "Отказано",
@@ -12,50 +16,59 @@ const status = [{
 ]
 
 function User(props) {
-
-	const [user, setUser] = useState({})
+	//стейт с данными заявки
+	const [user, setUser] = useState({});
+	//стейт для отслеживания инициализации причины отказа и вызова попап
 	const [reason, setReason] = useState('');
 
+	//срабатывает при первом открытии
 	useEffect(() => {
+		//переносим данные по этой заявке со страницы App.js в стейт
 		setUser(props.data);
-		setTimeout(() => {
-			new SelectPure("#status", {
-				options: status,
-				placeholder: props.status,
-				multiple: false,
-				onChange: value => { changeStatus(value); },
-				classNames: {
-					select: "status",
-					dropdownShown: "opened",
-					multiselect: "multiple",
-					label: "label",
-					placeholder: "placeholder",
-					dropdown: "options",
-					option: "option",
-					autocompleteInput: "autocomplete",
-					selectedLabel: "selected-label",
-					selectedOption: "selected",
-					placeholderHidden: "hidden",
-					optionHidden: "option--hidden",
-				}
-			});
-		}, 500)
+		//показываем select выбора статуса заявки, если статус уже установлен
+		props.status && statusSelect(props.status)
 	}, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-	function changeStatus(name) {
-		setUser(previous => {
-			return {
-				...previous,
-				status: name,
-				reason: user.status === 'Отказано' ? previous.reason : ''
-			};
+	//создам select для выбора статуса заявки (при вызове)
+	function statusSelect(thisStatus) {
+		selectStatus = new SelectPure("#status", {
+			options: status,
+			placeholder: thisStatus,
+			multiple: false,
+			onChange: value => { changeStatus(value); },
+			classNames: {
+				select: "status",
+				dropdownShown: "opened",
+				multiselect: "multiple",
+				label: "label",
+				placeholder: "placeholder",
+				dropdown: "options",
+				option: "option",
+				autocompleteInput: "autocomplete",
+				selectedLabel: "selected-label",
+				selectedOption: "selected",
+				placeholderHidden: "hidden",
+				optionHidden: "option--hidden",
+			}
 		});
-		console.log(name);
-		if(name === 'Отказано') {
-			setReason(true)
-		}
 	}
 
+	//сохраняем изменения статуса заказа в стейт
+	function changeStatus(name) {
+		// setUser(previous => {
+		// 	return {
+		// 		...previous,
+		// 		// status: name,
+		// 		reason: user.status === 'Отказано' ? previous.reason : ''
+		// 	};
+		// });
+		//вызываем попап для ввода причины отказа
+		// name === 'Отказано' && setReason(true);
+		name === 'Отказано' && block();
+		name === 'Одобрено' && pass();
+	}
+
+	//сохраняем в стейт значения input/textarea при изменении
 	function handleChange(event) {
 		const { name, value } = event.target;
 		setUser(previous => {
@@ -66,46 +79,42 @@ function User(props) {
 		});
 	}
 
+	//сохраняем изменения заявки в общей базе - App.js при изменении статуса заявки
 	useEffect(() => {
 		props.onAdd(user);
 	}, [user.status]) // eslint-disable-line react-hooks/exhaustive-deps
 
+	//сохраняем выбранный статус заявки в локальный стейт
 	function sendStatus(decision) {
 		setUser(previous => {
 			return {
 				...previous,
-				status: decision
+				status: decision,
+				reason: decision === 'Отказано' ? previous.reason : '',
+				security: props.security
 			};
 		});
-		props.onAdd(user);
+		//закрываем попап с вводом причнины отказа
 		setTimeout(() => {
-			// closePopup();
 			setReason(false);
 		}, 100)
 	}
 
-	function closePopup() {
+	//функция возврата на главную страницу
+	function goBack() {
 		props.onClose(true);
+		selectStatus = null;
 	}
 
+	//отказать
 	function block() {
-		setReason(true);
-		setUser(previous => {
-			return {
-				...previous,
-				security: props.security
-			};
-		});
+		setReason(true); //активируем попап с вводом причнины отказа
+		selectStatus === null && statusSelect('Отказано'); //инициализация функции изменения статуса заявки, с предотвращением дублирования
 	}
-
+	//разрешить
 	function pass() {
-		setUser(previous => {
-			return {
-				...previous,
-				security: props.security
-			};
-		});
-		sendStatus('Одобрено');
+		sendStatus('Одобрено'); //сохраняем решение о статусе заявки в локальный стейт
+		selectStatus === null && statusSelect('Одобрено'); //инициализация функции изменения статуса заявки, с предотвращением дублирования
 	}
 
 	return (
@@ -214,7 +223,7 @@ function User(props) {
 						</div>
 
 						<div className={user.status?"groupe":"hidden"}>
-							<label>Статус заявки1</label>
+							<label>Статус заявки</label>
 							<input
 								type="text"
 								name="status"
@@ -227,7 +236,7 @@ function User(props) {
 						</div>
 
 						<div className={!user.status?"groupe":"hidden"}>
-							<label>Статус заявки2</label>
+							<label>Статус заявки</label>
 							<input
 								type="text"
 								name="status"
@@ -260,7 +269,7 @@ function User(props) {
 				</div>
 				{user.status ?
 					<div className="formButton">
-						<button onClick={closePopup} style={{'width': '100%'}}>Назад</button>
+						<button onClick={goBack} style={{'width': '100%'}}>Назад</button>
 					</div>
 				:
 				<div className="formButton">

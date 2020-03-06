@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import InputMask from 'react-input-mask';
 import SelectPure from 'select-pure';
 
+//переменная для одностраничной работы функции совпадения ФИО
 var check = false;
+
+//База работников
 const workers = [{
 		label: "Иванов Иван Иванович",
 		value: "Иванов Иван Иванович",
@@ -33,6 +36,7 @@ const workers = [{
 	}
 ]
 
+//варианты периодов пропуска
 const passTime = [{
 		label: "1 час",
 		value: "1 час",
@@ -69,9 +73,12 @@ const passTime = [{
 
 function User(props) {
 
+	//стейт для вводимых данных
 	const [user, setUser] = useState({ n1: '', n2: '', n3: '', n4: 'разовый', n5: '', n6: '', n7: '', n8: '', n9: '', n10: '', n11: '' })
 
+	//срабатывает при первом открытии
 	useEffect(() => {
+		//создам select для выбора "ФИО инициатора заявки"
 		new SelectPure("#n3", {
 			options: workers,
 			placeholder: "Иванов Иван Иванович",
@@ -92,7 +99,7 @@ function User(props) {
 				optionHidden: "option--hidden",
 			}
 		});
-
+		//создам select для выбора "Периода действия пропуска"
 		new SelectPure("#n5", {
 			options: passTime,
 			placeholder: "24 часа",
@@ -115,6 +122,7 @@ function User(props) {
 		});
 	}, [])
 
+	//сохраняем изменения "ФИО инициатора заявки" в стейт
 	function changeN3(name) {
 		setUser(previous => {
 			return {
@@ -123,7 +131,7 @@ function User(props) {
 			};
 		})
 	}
-
+	//сохраняем изменения "Период действия пропуска" в стейт
 	function changeN5(name) {
 		setUser(previous => {
 			return {
@@ -132,7 +140,7 @@ function User(props) {
 			};
 		})
 	}
-
+	//сохраняем в стейт значения каждого input при изменении
 	function handleChange(event) {
 		const { name, value } = event.target;
 		setUser(previous => {
@@ -142,24 +150,26 @@ function User(props) {
 			};
 		})
 	}
-
+	//выбираем тип пропуска
 	function propuskChange(e) {
-		e.persist();
-		user.n4 !== e.target.value && setUser(f => { return { ...f, n4: e.target.value } })
-		e.preventDefault();
+		e.persist(); // удаляем синтетическое событие из пула
+		// user.n4 !== e.target.value && setUser(f => { return { ...f, n4: e.target.value } })
+		setUser(f => { return { ...f, n4: e.target.value } })
+		// e.preventDefault();
 	}
-
+	//отправляем форму
 	function sendForm(e) {
-		e.preventDefault();
-		props.onSubmit(user);
-		goBack();
+		e.preventDefault(); //предотвращаем перезагрузку страницы
+		props.onSubmit(user); //сохраняем заявку в общую базу - App.js
+		check = false; //удаляем переменную для одностраничной работы функции совпадения ФИО
+		goBack(); //возвращаемся на главную
 	}
-
+	//вкл/выкл функцию совпадения ФИО
 	function checkFio() {
 		check = check ? false : true;
 		changeCheck();
 	}
-
+	//сохраняем в стейт ФИО владельца и/или владельца
 	function changeCheck() {
 		setUser(previous => {
 			return {
@@ -168,7 +178,7 @@ function User(props) {
 			}
 		});
 	}
-
+	//отслеживаем изменения ФИО владельца и динамически меняем ФИО водителя, если включена функция совпадения ФИО
 	useEffect(() => {
 		setUser(previous => {
 			return {
@@ -178,19 +188,10 @@ function User(props) {
 		});
 	}, [user.n9])
 
+	//функция возврата на главную страницу
 	function goBack() {
 		props.onBack()
 	}
-	// const check = target.type === 'checkbox' ? target.checked : target.value;
-
-	// const check = (e) => {
-	// 	const { target } = e;
-	// 	const { name } = target;
-	//
-	// 	const value = target.checked ?
-	// 		setUser(previous => ({ ...previous, 'n10': user.n9 })) :
-	// 		setUser(previous => ({ ...previous, 'n10': '' }))
-	// };
 
 	return (
 		<div className="popup">
@@ -225,7 +226,7 @@ function User(props) {
 						</div>
 						<div className="groupe">
 							<label>ФИО инициатора заявки</label>
-							{/* <input
+							<input
 								type="text"
 								name="n3"
 								value={user.n3 || ''}
@@ -233,12 +234,12 @@ function User(props) {
 								autoComplete="off"
 								required="required"
 								hidden={true}
-							/> */}
+							/>
 							<span id="n3" className={user.n3 ? 'focus' : '' }></span>
 						</div>
 						<div className="groupe">
 							<label>Тип пропуска</label>
-							{/* <input
+							<input
 								type="text"
 								name="n4"
 								value={user.n4 || ''}
@@ -246,7 +247,7 @@ function User(props) {
 								autoComplete="off"
 								required="required"
 								hidden={true}
-							/> */}
+							/>
 							<div className={user.n4 ? 'propusk focus' : 'propusk' }>
 								<button type="button" className={user.n4 !== 'постоянный' ? 'active' : ''} onClick={propuskChange} value="разовый">разовый</button>
 								<button type="button" className={user.n4 === 'постоянный' ? 'active' : ''} onClick={propuskChange} value="постоянный">постоянный</button>
@@ -254,7 +255,7 @@ function User(props) {
 						</div>
 						<div className="groupe">
 							<label>Период действия пропуска</label>
-							{/* <input
+							<input
 								type="text"
 								name="n5"
 								value={user.n5 || ''}
@@ -263,7 +264,7 @@ function User(props) {
 								autoComplete="off"
 								required="required"
 								hidden={true}
-							/> */}
+							/>
 							<span id="n5" className={user.n5 ? 'focus' : '' }></span>
 						</div>
 						<div className="groupe">
@@ -357,7 +358,7 @@ function User(props) {
 					</form>
 				</div>
 				<div className="formButton">
-					<button onClick={goBack}>Назад</button>
+					<button type="button" onClick={goBack}>Назад</button>
 					<button type="submit" form="userForm">Подать заявку</button>
 					</div>
 				</div>

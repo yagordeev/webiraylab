@@ -3,6 +3,7 @@ import React from 'react';
 
 function AllData(props) {
 
+	//передаем номер заявки в общую базу - App.js и инициируем открытие заявки
 	function sendN2() {
 		props.onClick(props.order)
 	}
